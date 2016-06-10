@@ -22,10 +22,10 @@ Brief overview
 Class `pvtools.DataSource` provides access to a data file. Data file can be
 opened and closed using `__init__()` and `close()` methods, or through a context
 manager:
-``python
+```python
 with pvtools.dsopen("myfile.vtk") as datasource:
     # ...
-``
+```
 When open, you can ask for a value of a variable at a given point
 (`DataSource.probe()`) or on a line (`DataSource.line()`).
 
