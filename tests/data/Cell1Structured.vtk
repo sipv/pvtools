@@ -1,0 +1,43 @@
+# vtk DataFile Version 3.0
+Cell1Structured
+ASCII
+DATASET STRUCTURED_GRID
+DIMENSIONS 2 2 2
+POINTS 8 float
+0 0 0
+1 0 0
+0 1 0
+1 1 0
+0 0 1
+1 0 1
+0 1 1
+1 1 1
+
+CELL_DATA 1
+SCALARS CPressure float
+LOOKUP_TABLE default
+100
+VECTORS CVelocity float
+0.1 0.2 0.3
+
+POINT_DATA 8
+SCALARS PPressure float
+LOOKUP_TABLE default
+10
+20
+10
+20
+10
+20
+10
+20
+
+VECTORS PVelocity float
+0 0 1
+0 0 2
+0 0 1
+0 0 2
+0 0 1
+0 0 2
+0 0 1
+0 0 2
