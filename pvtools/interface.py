@@ -78,7 +78,7 @@ def to_dict(function, filename, **kwargs):
         ...       point=[((0.0, 0.5, 0.5), "P1"), ((1.0, 0.5, 0.5), "P2")]))
         {('uz', 'P1'): 1.0, ('p', 'P2'): 20.0, ('p', 'P1'): 10.0, ('uz', 'P2'): 2.0}
     """
-    if function not in ["probe", "line"]:
+    if function not in ["probe", "line", "boundary_line"]:
         raise ValueError("Unsupported function %s" % function)
 
     kwargs.update({"filename": filename})

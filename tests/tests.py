@@ -58,6 +58,23 @@ class TestVtk(unittest.TestCase):
             self.assertAlmostEqual(arr[1], 1.0)
             self.assertAlmostEqual(arr[2], 2.0)
 
+    def test_boundary_line(self):
+        with pvt.dsopen(self.file2) as ds:
+            point = (0.5, 0.5, 0.5)
+            normal = (0, 0, 1)
+            bbox = (0.5, None, None, 1.5, 0.5, None)
+
+            arr = ds.boundary_line("X", point, normal, bbox)
+            for xa, xb in zip(arr, [0.5, 1.0, 1.5]):
+                self.assertAlmostEqual(xa, xb)
+
+            arr = ds.boundary_line("Y", point, normal, bbox)
+            for ya, yb in zip(arr, [0.0, 0.0, 0.0]):
+                self.assertAlmostEqual(ya, yb)
+
+            arr = ds.boundary_line("Z", point, normal, bbox)
+            for za, zb in zip(arr, [0.5, 0.5, 0.5]):
+                self.assertAlmostEqual(za, zb)
 
     def test_to_dict_probe(self):
         res = pvt.to_dict(
@@ -83,6 +100,27 @@ class TestVtk(unittest.TestCase):
         self.assertEqual(res[("p", "L1")][0], res[("p", "L2")][2])
         self.assertEqual(res[("uz", "L1")][0], res[("uz", "L2")][2])
 
+    def test_to_dict_boundary_line(self):
+        # Two lines, at y = 0 and at y = 1. Velocity Z (changing only in
+        # the Z direction) should be equal.
+        res = pvt.to_dict(
+            "boundary_line",
+            filename=self.file2,
+            variable=[("PVelocity Z", "uz"), ("X", "X")],
+            plane_point=(0.5, 0.5, 0.5),
+            plane_normal=(0, 0, 1),
+            bounding_box=[((0.5, None, None, 1.5, 0.5, None), "y0"),
+                          ((0.5, 0.5, None, 1.5, None, None), "y1")])
+
+        # Need to sort - we do not know how it will come
+        inds0 = res[("X", "y0")].argsort()
+        y0 = res[("uz", "y0")][inds0]
+        inds1 = res[("X", "y1")].argsort()
+        y1 = res[("uz", "y1")][inds1]
+
+        self.assertEqual(len(y0), len(y1))
+        for i in range(len(y0)):
+            self.assertAlmostEqual(y0[i], y1[i])
 
 
 

@@ -28,6 +28,8 @@ with pvtools.dsopen("myfile.vtk") as datasource:
 ```
 When open, you can ask for a value of a variable at a given point
 (`DataSource.probe()`) or on a line (`DataSource.line()`).
+`DataSource.boundary_line()` gives you values at the intersection of the boundary
+with the plane.
 
 Functions `pvtools.to_dict()` and `pvtools.to_json()` help when you deal with
 a set of similar queries.
