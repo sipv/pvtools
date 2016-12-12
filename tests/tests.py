@@ -123,10 +123,33 @@ class TestVtk(unittest.TestCase):
             self.assertAlmostEqual(y0[i], y1[i])
 
 
+class TestFoam(unittest.TestCase):
+    def setUp(self):
+        self.casefile = os.path.join(pvt.PVTOOLS_DIR,
+                                     "tests/data/Cell1Foam/Cell1Foam.foam")
+
+    def test_get_variables(self):
+        with pvt.dsopen(self.casefile) as ds:
+            self.assertEqual(sorted(ds.get_variables('cell')), ["U", "p"])
+            self.assertEqual(sorted(ds.get_variables('point')), ["U", "p"])
+
+
+    def test_probe(self):
+        with pvt.dsopen(self.casefile) as ds:
+            self.assertAlmostEqual(ds.probe("p", (0.0, 0.5, 0.5)), 1.0)
+            self.assertAlmostEqual(ds.probe("p", (1.0, 0.5, 0.5)), 1.5)
+            self.assertAlmostEqual(ds.probe("p", (2.0, 0.5, 0.5)), 2.0)
+            self.assertAlmostEqual(ds.probe("U Z", (0.0, 0.5, 0.5)), 4.0)
+            self.assertAlmostEqual(ds.probe("U", (0.0, 0.5, 0.5)), 5.0)
+            self.assertAlmostEqual(ds.probe("Missing", (1.0, 0.5, 0.5)), None)
+            self.assertAlmostEqual(ds.probe("p", (0, 0, -1)), None)
+            self.assertAlmostEqual(ds.probe("Y", (1, 0.5, 0.5)), 0.5)
+
 
 if __name__ == '__main__':
     test_suite = unittest.TestSuite()
     test_suite.addTest(unittest.makeSuite(TestVtk))
+    test_suite.addTest(unittest.makeSuite(TestFoam))
     test_suite.addTest(doctest.DocTestSuite(pvt.interface))
 
     unittest.TextTestRunner(verbosity=2, buffer=True).run(test_suite)

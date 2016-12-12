@@ -121,6 +121,9 @@ class DataSource:
         extension = os.path.splitext(filename)[1].lower()
         if extension == ".vtk":
             self.reader = pvs.LegacyVTKReader(FileNames=[filename])
+        elif extension in [".foam", ".openfoam"]:
+            self.reader = pvs.OpenFOAMReader(FileName=filename)
+            self.reader.UpdatePipeline(time=self.reader.TimestepValues[-1])
         else:
             raise ValueError("Unsupported format: %s" % extension)
 
